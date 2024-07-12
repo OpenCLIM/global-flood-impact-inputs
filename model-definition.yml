@@ -9,7 +9,7 @@ metadata:
   summary: >
     This model takes all of the parameter/ input data from the user specifically for the urban flooding workflow. 
     This data is then propogated through the model, reducing user input. 
-  source_code: https://github.com/OpenCLIM/flood-impact-inputs
+  source_code: https://github.com/OpenCLIM/global-flood-impact-inputs/
   description: >
     All data/ choices made by the user are inputted at this stage of the model to reduce user error. 
     This process simplifies the user input methods.
