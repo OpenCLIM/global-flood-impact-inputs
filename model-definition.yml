@@ -1,0 +1,235 @@
+kind: M
+api_version: v1beta3
+metadata:
+  display_name: Global Urban_Flooding:Data Inputs
+  contact_point_name: Olivia Butters
+  contact_point_email: olivia.butters@newcastle.ac.uk
+  name: global-data-inputs
+  publisher: Newcastle University
+  summary: >
+    This model takes all of the parameter/ input data from the user specifically for the urban flooding workflow. 
+    This data is then propogated through the model, reducing user input. 
+  source_code: https://github.com/OpenCLIM/flood-impact-inputs
+  description: >
+    All data/ choices made by the user are inputted at this stage of the model to reduce user error. 
+    This process simplifies the user input methods.
+
+spec:
+  inputs:
+    parameters:
+      - name: COUNTRY
+        title: Country
+        type: string
+        description: The country where the urban area is located.
+        default: England
+        required: true
+
+      - name: LOCATION
+        title: Location
+        type: string
+        description: The city/location of interest.
+        default: Newcastle
+        required: true
+
+      - name: PROJECTION
+        title: Projection  
+        type: number
+        description: 
+          Input the numerical code for the required projection (e.g. 27700). 
+          Use a projection that uses meters not decimal degrees. 
+          If left blank the model will apply the appropriate Universal Transverse Mercator (UTM) Coordinate System.
+        default: 0
+        required: False
+
+      - name: YEAR
+        title: Year
+        type: number
+        description: The year of interest (range 2030-2080).
+        default: 2020
+        required: true
+        options:
+          - name: 2020
+            title: 2020
+          - name: 2035
+            title: 2035
+          - name: 2050
+            title: 2050
+          - name: 2055
+            title: 2055
+          - name: 2065
+            title: 2065
+          - name: 2080
+            title: 2080
+          - name: 2085
+            title: 2085       
+
+      - name: RAINFALL_MODE
+        title: Rainfall mode
+        type: string
+        description:
+          # If `RAINFALL_MODE` is set to "return_period" then the rainfall depth corresponding to the `DURATION` and `RETURN_PERIOD` are extracted from the relevant CSV file in the `future-drainage` dataslot.
+          # If the `TIME_HORIZON` is anything other than "baseline", the rainfall depth is then uplifted by the percentage given in the CSV file.
+          If `RAINFALL_MODE` is set to "total_depth" then the `TOTAL_DEPTH` parameter is used to define the amount of rainfall and the `RETURN_PERIOD` and `TIME_HORIZON` parameters are ignored.
+          # The rainfall depth value, either directly provided or extracted from FUTURE-DRAINAGE, is used to generate a storm profile in combination with the summer profile and `DURATION` parameter.
+        default: total_depth
+        required: true
+        options:
+          # - name: return_period
+          #   title: Return Periods
+          - name: total_depth
+            title: Total depth
+
+      - name: TOTAL_DEPTH
+        title: Total depth (mm)
+        description:
+          The total depth of rainfall during the event.
+          #This parameter is only used if `RAINFALL_MODE` is set to "total_depth".
+        type: number
+        default: 40
+        required: false
+        min: 10
+        max: 100
+
+      - name: DURATION
+        title: Duration (hours)
+        description:
+          The duration of the rainfall event.
+          This value is used in combination with the rainfall depth and summer profile to generate a storm profile.
+          #If `RAINFALL_MODE` is "return_period", this value is also used to extract a rainfall depth from FUTURE-DRAINAGE.
+          #Only specific values are available as there is a limited number of durations within FUTURE-DRAINAGE.
+        type: string
+        default: '1'
+        required: true
+        options:
+          - name: '1'
+            title: '1'
+          - name: '3'
+            title: '3'
+          - name: '6'
+            title: '6'
+          - name: '12'
+            title: '12'
+          - name: '24'
+            title: '24'
+
+      - name: OPEN_BOUNDARIES
+        title: Open Boundaries
+        description:
+          If `OPEN_BOUNDARIES` is "True", water will be allowed to leave the domain at the edges.
+          If it is "False", water will bounce back from the edges of the domain and cannot leave.
+        type: boolean
+        default: True
+        required: true
+
+      - name: PERMEABLE_AREAS
+        title: Permeable areas
+        type: string
+        description:
+          If `PERMEABLE_AREAS` is set to "polygons", polygons from the `green_areas` dataslot are used to define areas which are permeable.
+          Otherwise, all cells are treated as being "permeable" or "impermeable", depending on the selection.
+        default: polygons
+        required: true
+        options:
+          - name: polygons
+            title: Polygons
+          - name: permeable
+            title: Permeable
+          - name: impermeable
+            title: Impermeable
+
+      - name: ROOF_STORAGE
+        title: Roof storage
+        description:
+          Depth of water that can be stored on rooftops (m).
+          This value is uniformly applied to all buildings.
+        type: number
+        default: 0
+        required: true
+        min: 0
+        max: 10
+
+      - name: POST_EVENT_DURATION
+        title: Post-event Duration (hours)
+        description:
+          The duration of the dry period following the rainfall event.
+          After the rainfall event ends, CityCAT will continue to run for this period of time.
+          This is to allow water to continue propogating and accumulating on the floodplain.
+        type: number
+        required: true
+        default: 0
+        min: 0
+        max: 10
+
+      - name: OUTPUT_INTERVAL
+        title: Output Interval (seconds)
+        description:
+          Time between depth and velocity outputs (s).
+          Decreasing this value will lead to a higher number of output files.
+        type: integer
+        default: 600
+        required: true
+
+      - name: SIZE
+        title: Domain Size (km)
+        description:
+          The width and height of the domain to create, centered at the location specified by `X` and `Y`.
+          This value is only used if no data is available in the `boundary` dataslot.
+        type: number
+        required: false
+        default: 0.1
+        min: 0.1
+        max: 10000
+
+      - name: X
+        title: Domain Centroid X (OSGB)
+        description:
+          The X coordinate of the domain centroid in OSGB.
+          This value is only used if no data is available in the `boundary` dataslot.
+        type: integer
+        required: false
+        default: 0
+
+      - name: Y
+        title: Domain Centroid Y (OSGB)
+        description:
+          The Y coordinate of the domain centroid in OSGB.
+          This value is only used if no data is available in the `boundary` dataslot.
+        type: integer
+        required: false
+        default: 0
+    
+
+    dataslots:
+      - name: Boundary File
+        description:
+          A .gpkg or .shp file containing the boundary of the location of interest.
+        default:
+          - 09a6bbc0-8d2c-4e1b-a0d2-7f11833f20ea
+        path: inputs/boundary/
+        required: true
+        
+      - name: UTM Zones
+        description:
+          A .gpkg file containing global UTM codes.
+        default:
+          - 28ee1963-6a2d-4c24-b380-8a874e0e4c51
+        path: inputs/utm-zone/
+        required: true
+      
+  outputs:
+    datasets:
+      - name: outputs/boundary/*
+        type: folder
+        description:
+          The city boundary file is saved in gpkg form.
+        
+      - name: outputs/parameters/*
+        type: folder
+        description:
+          All parameters and their values are stored in a csv file.
+          
+      - name: outputs/metadata/*
+        type: folder
+        description:
+          NID metadata for outputs.
+          These file can be used for creating datasets on DAFNI with the title defined by the parameters specified by the user.
