@@ -61,7 +61,27 @@ spec:
           - name: 2080
             title: 2080
           - name: 2085
-            title: 2085       
+            title: 2085
+            
+      - name: SSP
+        title: SSP
+        type: string
+        description: The socio-economic pathway of interest.
+        default: 'baseline'
+        required: true
+        options:
+          - name: 'baseline'
+            title: 'baseline'
+          - name: 'ssp1'
+            title: 'ssp1'
+          - name: 'ssp2'
+            title: 'ssp2'
+          - name: 'ssp3'
+            title: 'ssp3'
+          - name: 'ssp4'
+            title: 'ssp4'
+          - name: 'ssp5'
+            title: 'ssp5'     
 
       - name: RAINFALL_MODE
         title: Rainfall mode
@@ -215,7 +235,13 @@ spec:
           - 28ee1963-6a2d-4c24-b380-8a874e0e4c51
         path: inputs/utm-zone/
         required: true
-      
+
+      - name: SSP Data Sets
+        description:
+          Zip files of the data for each SSP.
+        path: inputs/ssps/
+        required: false
+        
   outputs:
     datasets:
       - name: outputs/boundary/*
@@ -225,6 +251,14 @@ spec:
         
       - name: outputs/parameters/*
         type: folder
+        description:
+          All parameters and their values are stored in a csv file.
+          
+      - name: outputs/metadata/*
+        type: folder
+        description:
+          NID metadata for outputs.
+          These file can be used for creating datasets on DAFNI with the title defined by the parameters specified by the user.
         description:
           All parameters and their values are stored in a csv file.
           
