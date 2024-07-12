@@ -184,6 +184,7 @@ boundary.to_file(os.path.join(boundary_outputs_path, location + '.gpkg'),driver=
 # Print all of the input parameters to an excel sheet to be read in later
 with open(os.path.join(parameter_outputs_path,country + '-' + location + '-' + year +'-parameters.csv'), 'w') as f:
     f.write('PARAMETER,VALUE\n')
+    f.write('COUNTRY,%s\n' %country)
     f.write('LOCATION,%s\n' %location)
     f.write('PROJECTION,%s\n' %projection)
     f.write('YEAR,%s\n' %year)
