@@ -92,7 +92,6 @@ rainfall_mode = os.getenv('RAINFALL_MODE')
 rainfall_total = int(os.getenv('TOTAL_DEPTH'))
 duration = int(os.getenv('DURATION'))
 open_boundaries = (os.getenv('OPEN_BOUNDARIES'))
-permeable_areas = os.getenv('PERMEABLE_AREAS')
 roof_storage = float(os.getenv('ROOF_STORAGE'))
 post_event_duration = int(os.getenv('POST_EVENT_DURATION'))
 output_interval = int(os.getenv('OUTPUT_INTERVAL'))
@@ -113,20 +112,13 @@ if y != None:
 print(size)
 
 # Unused Parameters for this version of citycat - for further studies these can be incorporated
+# permeable_areas = os.getenv('PERMEABLE_AREAS')
 # baseline = (os.getenv('BASELINE'))
 # time_horizon = os.getenv('TIME_HORIZON')
 # discharge_parameter = float(os.getenv('DISCHARGE'))
 # return_period = int(os.getenv('RETURN_PERIOD'))
 
-# Locate the boundary file and move into the correct output folder
-# Rename based on the location of the city of interest
-boundary = glob(boundary_path + "/*.*", recursive = True)
-src=boundary[0]
-print('src:',src)
-dst=os.path.join(boundary_outputs_path, location + '.gpkg')
-print('dst:',dst)
-shutil.copy(src,dst)
-
+# Locate the boundary file and identify the bounding box limits
 boundary_1 = glob(boundary_path + "/*.*", recursive = True)
 boundary = gpd.read_file(boundary_1[0])
 bbox = boundary.bounds
@@ -149,9 +141,6 @@ if projection == '0' :
 
   print('boundary:', boundary.crs)
   print('zones:',utms.crs)
-
-  boundary_crs = boundary.crs
-  zones_crs = utms.crs
 
   # Ensure all of the polygons are defined by the same crs
   boundary.to_crs(epsg=3857, inplace=True)
@@ -179,7 +168,17 @@ if projection == '0' :
      projection = '327' + zone
 
   print('projection:',projection)
-  
+
+
+# Ensure all of the polygons are defined by the same crs
+boundary.to_crs(epsg=projection, inplace=True)
+print('new boundary crs:',boundary.crs)
+
+print(boundary.head())
+boundary['fid'] = boundary['fid'].astype('int64')
+
+# Print to a gpkg file
+boundary.to_file(os.path.join(boundary_outputs_path, location + '.gpkg'),driver='GPKG')#,index=False)
 
 # Print all of the input parameters to an excel sheet to be read in later
 with open(os.path.join(parameter_outputs_path,country + '-' + location + '-' + year +'-parameters.csv'), 'w') as f:
@@ -191,13 +190,13 @@ with open(os.path.join(parameter_outputs_path,country + '-' + location + '-' + y
     f.write('TOTAL_DEPTH,%s\n' %rainfall_total)
     f.write('DURATION,%s\n' %duration) 
     f.write('OPEN_BOUNDARIES,%s\n' %open_boundaries)
-    f.write('PERMEABLE_AREAS,%s\n' %permeable_areas)
     f.write('ROOF_STORAGE,%s\n' %roof_storage)
     f.write('POST_EVENT_DURATION,%s\n' %post_event_duration)
     f.write('OUTPUT_INTERVAL,%s\n' %output_interval)
     f.write('SIZE,%s\n' %size)
     f.write('X,%s\n' %x)
     f.write('Y,%s\n' %y)
+    #f.write('PERMEABLE_AREAS,%s\n' %permeable_areas)
     #f.write('BASELINE, %s\n' %baseline)
     #f.write('TIME_HORIZON,%s\n' %time_horizon)
     #f.write('DISCHARGE,%s\n' %discharge_parameter)
