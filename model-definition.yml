@@ -121,22 +121,6 @@ spec:
         default: True
         required: true
 
-      - name: PERMEABLE_AREAS
-        title: Permeable areas
-        type: string
-        description:
-          If `PERMEABLE_AREAS` is set to "polygons", polygons from the `green_areas` dataslot are used to define areas which are permeable.
-          Otherwise, all cells are treated as being "permeable" or "impermeable", depending on the selection.
-        default: polygons
-        required: true
-        options:
-          - name: polygons
-            title: Polygons
-          - name: permeable
-            title: Permeable
-          - name: impermeable
-            title: Impermeable
-
       - name: ROOF_STORAGE
         title: Roof storage
         description:
