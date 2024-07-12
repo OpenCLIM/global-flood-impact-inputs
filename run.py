@@ -175,7 +175,8 @@ boundary.to_crs(epsg=projection, inplace=True)
 print('new boundary crs:',boundary.crs)
 
 print(boundary.head())
-boundary['fid'] = boundary['fid'].astype('int64')
+if 'fid' in boundary.columns:
+  boundary['fid'] = boundary['fid'].astype('int64')
 
 # Print to a gpkg file
 boundary.to_file(os.path.join(boundary_outputs_path, location + '.gpkg'),driver='GPKG')#,index=False)
