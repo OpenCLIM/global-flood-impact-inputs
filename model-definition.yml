@@ -77,7 +77,7 @@ spec:
           A .gpkg file containing global UTM codes.
         default:
           - 28ee1963-6a2d-4c24-b380-8a874e0e4c51
-        path: inputs/utm-zones/
+        path: inputs/utm_zones/
         required: true
       
   outputs:
