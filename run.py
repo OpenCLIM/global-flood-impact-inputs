@@ -2,8 +2,6 @@ import os
 import glob
 from glob import glob
 import geopandas as gpd
-import pandas as pd
-import shutil
 import math
 from geojson import Polygon
 from os.path import join, isdir, isfile
@@ -68,8 +66,7 @@ def round_up(val, round_val):
 data_path = os.getenv('DATA','/data')
 inputs_path = os.path.join(data_path, 'inputs')
 boundary_path = os.path.join(inputs_path, 'boundary')
-utm_zone_path = os.path.join(inputs_path, 'utm_zone')
-utm_code_path = os.path.join(inputs_path,'utm_codes')
+utm_zone_path = os.path.join(inputs_path, 'utm_zones')
 outputs_path = os.path.join(data_path, 'outputs')
 if not os.path.exists(outputs_path):
     os.mkdir(outputs_path)
@@ -88,35 +85,6 @@ year = os.getenv('YEAR')
 country = os.getenv('COUNTRY')
 projection = os.getenv('PROJECTION')
 location = os.getenv('LOCATION')
-rainfall_mode = os.getenv('RAINFALL_MODE')
-rainfall_total = int(os.getenv('TOTAL_DEPTH'))
-duration = int(os.getenv('DURATION'))
-open_boundaries = (os.getenv('OPEN_BOUNDARIES'))
-roof_storage = float(os.getenv('ROOF_STORAGE'))
-post_event_duration = int(os.getenv('POST_EVENT_DURATION'))
-output_interval = int(os.getenv('OUTPUT_INTERVAL'))
-size = os.getenv('SIZE')  # convert from km to m
-x = os.getenv('X')
-y = os.getenv('Y')
-
-
-if size != None:
-  size = float(size)*1000
-
-if x != None:
-  x = int(x)
-
-if y != None:
-  y = int(y)
-
-print(size)
-
-# Unused Parameters for this version of citycat - for further studies these can be incorporated
-# permeable_areas = os.getenv('PERMEABLE_AREAS')
-# baseline = (os.getenv('BASELINE'))
-# time_horizon = os.getenv('TIME_HORIZON')
-# discharge_parameter = float(os.getenv('DISCHARGE'))
-# return_period = int(os.getenv('RETURN_PERIOD'))
 
 # Locate the boundary file and identify the bounding box limits
 boundary_1 = glob(boundary_path + "/*.*", recursive = True)
@@ -188,22 +156,6 @@ with open(os.path.join(parameter_outputs_path,country + '-' + location + '-' + y
     f.write('LOCATION,%s\n' %location)
     f.write('PROJECTION,%s\n' %projection)
     f.write('YEAR,%s\n' %year)
-    f.write('RAINFALL_MODE,%s\n' %rainfall_mode)  
-    f.write('TOTAL_DEPTH,%s\n' %rainfall_total)
-    f.write('DURATION,%s\n' %duration) 
-    f.write('OPEN_BOUNDARIES,%s\n' %open_boundaries)
-    f.write('ROOF_STORAGE,%s\n' %roof_storage)
-    f.write('POST_EVENT_DURATION,%s\n' %post_event_duration)
-    f.write('OUTPUT_INTERVAL,%s\n' %output_interval)
-    f.write('SIZE,%s\n' %size)
-    f.write('X,%s\n' %x)
-    f.write('Y,%s\n' %y)
-    #f.write('PERMEABLE_AREAS,%s\n' %permeable_areas)
-    #f.write('BASELINE, %s\n' %baseline)
-    #f.write('TIME_HORIZON,%s\n' %time_horizon)
-    #f.write('DISCHARGE,%s\n' %discharge_parameter)
-    #f.write('RETURN_PERIOD,%s\n' %return_period)
-
 
 title_for_output = country + ' - ' + location + ' - ' + ' - ' + year
 
